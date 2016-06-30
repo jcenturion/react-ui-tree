@@ -69,8 +69,6 @@ module.exports = React.createClass({
     return null;
   },
   render: function render() {
-    console.log(this.props.disableDrag);
-
     var tree = this.state.tree;
     var content = React.createElement(
       'div',
