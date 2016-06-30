@@ -10,7 +10,8 @@ module.exports = React.createClass({
   propTypes: {
     tree: React.PropTypes.object.isRequired,
     paddingLeft: React.PropTypes.number,
-    renderNode: React.PropTypes.func.isRequired
+    renderNode: React.PropTypes.func.isRequired,
+    disableDrag: React.PropTypes.bool
   },
 
   getDefaultProps: function getDefaultProps() {
@@ -68,23 +69,45 @@ module.exports = React.createClass({
     return null;
   },
   render: function render() {
-    var tree = this.state.tree;
-    var dragging = this.state.dragging;
-    var draggingDom = this.getDraggingDom();
+    console.log(this.props.disableDrag);
 
-    return React.createElement(
+    var tree = this.state.tree;
+    var content = React.createElement(
       'div',
       { className: 'm-tree' },
-      draggingDom,
       React.createElement(Node, {
         tree: tree,
         index: tree.getIndex(1),
         key: 1,
         paddingLeft: this.props.paddingLeft,
-        onDragStart: this.dragStart,
-        onCollapse: this.toggleCollapse,
-        dragging: dragging && dragging.id
+        onCollapse: this.toggleCollapse
       })
+    );
+
+    if (!this.props.disableDrag) {
+      var dragging = this.state.dragging;
+      var draggingDom = this.getDraggingDom();
+
+      content = React.createElement(
+        'div',
+        { className: 'm-tree' },
+        draggingDom,
+        React.createElement(Node, {
+          tree: tree,
+          index: tree.getIndex(1),
+          key: 1,
+          paddingLeft: this.props.paddingLeft,
+          onDragStart: this.dragStart,
+          onCollapse: this.toggleCollapse,
+          dragging: dragging && dragging.id
+        })
+      );
+    }
+
+    return React.createElement(
+      'div',
+      null,
+      content
     );
   },
   dragStart: function dragStart(id, dom, e) {
